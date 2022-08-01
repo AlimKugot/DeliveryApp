@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  backend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8085:80"
+    depends_on:
+      - database
+
+  client: 
+    ports:
+      - "3005:3000"
+
+  database:
+    environment:
+      POSTGRES_DB: "interview_order"
+      POSTGRES_USER: "alim"
+      POSTGRES_PASSWORD: "simple_password"
+    volumes:
+     - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alim -d interview_order"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: always
+
+  proxy:
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+
+volumes:
+  db-data:
