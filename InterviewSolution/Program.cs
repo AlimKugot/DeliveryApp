@@ -6,7 +6,17 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Dependency Inversion
+// CORs Policty
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicty", builder =>
+    {
+        builder
+        .WithOrigins("http://localhost:3000");
+    });
+});
+
+// Dependency Injection
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepositoryCrudAsync, OrderRepositoryCrudAsync>();
 builder.Services.AddTransient<DataContext, DataContext>();
@@ -32,6 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 
