@@ -1,10 +1,11 @@
 using InterviewSolution.Model;
-using InterviewSolution.Model.Entity;
 using InterviewSolution.Model.Repository;
 using InterviewSolution.Service;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // CORs Policty
 builder.Services.AddCors(options =>
@@ -19,10 +20,11 @@ builder.Services.AddCors(options =>
 // Dependency Injection
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepositoryCrudAsync, OrderRepositoryCrudAsync>();
-builder.Services.AddTransient<DataContext, DataContext>();
+builder.Services.AddScoped<DataContext, DataContext>();
+builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swaggerGenOpts =>
 {
@@ -45,5 +47,12 @@ app.UseAuthorization();
 app.UseCors("CorsPolicy");
 
 app.MapControllers();
+
+// Apply Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
+}
 
 app.Run();

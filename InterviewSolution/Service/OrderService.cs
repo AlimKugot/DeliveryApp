@@ -6,10 +6,12 @@ namespace InterviewSolution.Service
     public class OrderService : IOrderService
     {
         private readonly IOrderRepositoryCrudAsync _ordersRepository;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IOrderRepositoryCrudAsync orderRepository)
+        public OrderService(IOrderRepositoryCrudAsync orderRepository, ILogger<OrderService> logger)
         {
             _ordersRepository = orderRepository;
+            _logger = logger;
         }
 
         public Task<bool> CreateAsync(Order entity)
