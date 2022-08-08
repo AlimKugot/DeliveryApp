@@ -8,19 +8,22 @@ namespace InterviewSolution.Controller
 {
     [Route("api/orders")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderService _ordersService;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrdersController(IOrderService ordersService)
+        public OrderController(IOrderService ordersService, ILogger<OrderController> logger)
         {
             _ordersService = ordersService;
+            _logger = logger;
         }
-        
+
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            _logger.LogInformation("[{DT}] :: Get All request to {Url}", DateTime.Now, Request.Path.Value);
             List<Order> orders = await _ordersService.GetAllAsync();
             return Ok(orders);
         }
@@ -28,6 +31,7 @@ namespace InterviewSolution.Controller
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
+            _logger.LogInformation("[{DT}] :: Get request to {Url}", DateTime.Now, Request.Path.Value);
             Order order = await _ordersService.GetByIdAsync(id);
             if (order != null)
             {
@@ -42,6 +46,7 @@ namespace InterviewSolution.Controller
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
+            _logger.LogInformation("[{DT}] :: Post request to {Url}", DateTime.Now, Request.Path.Value);
             bool createSuccessful = await _ordersService.CreateAsync(order);
             if (createSuccessful)
             {
@@ -53,15 +58,25 @@ namespace InterviewSolution.Controller
             }
         }
 
-        [HttpPut("{id}")]
-        public void Put([FromBody] Order order)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] Order order)
         {
-                
+            _logger.LogInformation("[{DT}] :: Put request to {Url}", DateTime.Now, Request.Path.Value);
+            bool updateSuccessful = await _ordersService.UpdateAsync(order);
+            if (updateSuccessful)
+            {
+                return Ok("Update successful.");
+            }
+            else 
+            {
+                return BadRequest(order);    
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("[{DT}] :: Delete request to {Url}", DateTime.Now, Request.Path.Value);
             bool deleteSuccessful = await _ordersService.DeleteAsync(id);
             if (deleteSuccessful)
             {
