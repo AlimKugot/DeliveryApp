@@ -108,6 +108,7 @@ export default function App() {
   function onOrderCreated(createdOrder) {
     setShowingCreateNewOrderForm(false);
     if (createdOrder === null) return;
+    alert('Press Ok to see the result');
     getOrders();
   }
 
