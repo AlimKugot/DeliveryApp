@@ -4,8 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # vs code
-.vscode/*
-pgdata/*
+.vscode/
+pgdata/
 
 # User-specific files
 *.rsuser
