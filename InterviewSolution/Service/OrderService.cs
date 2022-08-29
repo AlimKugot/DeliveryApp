@@ -21,7 +21,7 @@ namespace InterviewSolution.Service
 
         public Task<bool> DeleteAsync(long id)
         {
-            return (_ordersRepository.DeleteAsync(id));
+            return _ordersRepository.DeleteAsync(id);
         }
 
         public Task<List<Order>> GetAllAsync()
