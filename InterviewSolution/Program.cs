@@ -1,3 +1,4 @@
+using InterviewSolution.Middleware;
 using InterviewSolution.Model;
 using InterviewSolution.Model.Repository;
 using InterviewSolution.Service;
@@ -43,6 +44,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.UseCors("CorsPolicy");
 
